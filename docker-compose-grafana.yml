@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    container_name: grafana
+    restart: unless-stopped
+
+    networks:
+      - grafana
+    ports:
+      - 3000:3000
+    env_file:
+      - ./config/grafana.env
+
+  postgres:
+    image: postgres:16.4
+    container_name: postgres-gf
+    restart: unless-stopped
+
+    networks:
+      - grafana
+    ports:
+      - 5432:5432
+    volumes:
+      - data-pg:/var/lib/postgresql/data
+    env_file:
+      - ./config/pg.env
+
+## export already exists volume (after user import.sh)
+volumes:
+  data-pg:
+    name: data-pg
+
+networks:
+  grafana:
+    name: grafana
+    driver: bridge

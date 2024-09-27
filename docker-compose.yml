@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16.4
+    container_name: pg-db
+
+    networks:
+      - pg-nw
+    volumes:
+      - data-pg:/var/lib/postgresql/data
+    env_file:
+      - ./config/pg.env
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  loader:
+    image: ghcr.io/dimitri/pgloader:latest
+    container_name: pg_loader
+    networks:
+      - pg-nw
+    volumes:
+      - ./grafana.db:/grafana.db
+      - ./db.load:/db.load
+    command: "pgloader  /db.load"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  data-pg:
+    name: data-pg
+
+networks:
+  pg-nw:
+    name: pg-nw
+    driver: bridge

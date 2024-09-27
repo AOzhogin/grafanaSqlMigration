@@ -1,0 +1,42 @@
+load database
+	from sqlite:///grafana.db
+	into postgresql://<FEEDME>:<FEEDME>@pg-db/grafana
+	with include drop, create tables, create indexes, reset sequences
+	CAST
+		column migration_log.success to boolean,
+		column user.is_admin to boolean,
+		column user.email_verified to boolean,
+		column user.is_disabled to boolean,
+		column user.is_service_account to boolean,
+		column temp_user.email_sent to boolean,
+		column data_source.basic_auth to boolean,
+		column data_source.is_default to boolean,
+		column data_source.with_credentials to boolean,
+		column data_source.read_only to boolean,
+		column data_source.is_prunable to boolean,
+		column api_key.is_revoked to boolean,
+		column dashboard_snapshot.external to boolean,
+		column plugin_setting.enabled to boolean,
+		column plugin_setting.pinned to boolean,
+		column alert.silenced to boolean,
+		column alert_notification.is_default to boolean,
+		column alert_notification.send_reminder to boolean,
+		column alert_notification.disable_resolve_message to boolean,
+		column team_member.external to boolean,
+		column user_auth_token.auth_token_seen to boolean,
+		column alert_configuration.default to boolean,
+		column alert_configuration_history.default to boolean,
+		column data_keys.active to boolean,
+		column role.hidden to boolean,
+		column correlation.provisioned to boolean,
+		column dashboard_public.is_enabled to boolean,
+		column dashboard_public.annotations_enabled to boolean,
+		column dashboard_public.time_selection_enabled to boolean,
+		column dashboard.is_folder to boolean,
+		column dashboard.has_acl to boolean,
+		column dashboard.is_public to boolean,
+		column sso_setting.is_deleted to boolean,
+		column alert_rule.is_paused to boolean,
+		column alert_rule_version.is_paused to boolean
+  set work_mem to '16MB', maintenance_work_mem to '512 MB'
+;
